@@ -343,7 +343,7 @@ if (typeof global.Promise !== 'function') {
 },{"2":2}],4:[function(_dereq_,module,exports){
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2148,25 +2148,33 @@ var LocalForage = function () {
     };
 
     LocalForage.prototype.getDriver = function getDriver(driverName, callback, errorCallback) {
+        var _this = this;
+
         var self = this;
         var getDriverPromise = Promise$1.resolve().then(function () {
-            if (isLibraryDriver(driverName)) {
-                switch (driverName) {
-                    case self.INDEXEDDB:
-                        return asyncStorage;
-                    case self.LOCALSTORAGE:
-                        return localStorageWrapper;
-                    case self.WEBSQL:
-                        return webSQLStorage;
-                }
-            } else if (CustomDrivers[driverName]) {
-                return CustomDrivers[driverName];
+            if (_this.getDriverSync(driverName)) {
+                return _this.getDriverSync(driverName);
             } else {
                 throw new Error('Driver not found.');
             }
         });
         executeTwoCallbacks(getDriverPromise, callback, errorCallback);
         return getDriverPromise;
+    };
+
+    LocalForage.prototype.getDriverSync = function getDriverSync(driverName) {
+        if (isLibraryDriver(driverName)) {
+            switch (driverName) {
+                case self.INDEXEDDB:
+                    return asyncStorage;
+                case self.LOCALSTORAGE:
+                    return localStorageWrapper;
+                case self.WEBSQL:
+                    return webSQLStorage;
+            }
+        } else if (CustomDrivers[driverName]) {
+            return CustomDrivers[driverName];
+        }
     };
 
     LocalForage.prototype.getSerializer = function getSerializer(callback) {

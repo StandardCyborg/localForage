@@ -226,23 +226,29 @@ class LocalForage {
     getDriver(driverName, callback, errorCallback) {
         var self = this;
         var getDriverPromise = Promise.resolve().then(() => {
-            if (isLibraryDriver(driverName)) {
-                switch (driverName) {
-                    case self.INDEXEDDB:
-                        return idbDriver;
-                    case self.LOCALSTORAGE:
-                        return localstorageDriver;
-                    case self.WEBSQL:
-                        return websqlDriver;
-                }
-            } else if (CustomDrivers[driverName]) {
-                return CustomDrivers[driverName];
+            if (this.getDriverSync(driverName)) {
+                return this.getDriverSync(driverName);
             } else {
                 throw new Error('Driver not found.');
             }
         });
         executeTwoCallbacks(getDriverPromise, callback, errorCallback);
         return getDriverPromise;
+    }
+
+    getDriverSync(driverName) {
+        if (isLibraryDriver(driverName)) {
+            switch (driverName) {
+                case self.INDEXEDDB:
+                    return idbDriver;
+                case self.LOCALSTORAGE:
+                    return localstorageDriver;
+                case self.WEBSQL:
+                    return websqlDriver;
+            }
+        } else if (CustomDrivers[driverName]) {
+            return CustomDrivers[driverName];
+        }
     }
 
     getSerializer(callback) {

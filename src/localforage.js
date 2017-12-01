@@ -226,8 +226,8 @@ class LocalForage {
     getDriver(driverName, callback, errorCallback) {
         var self = this;
         var getDriverPromise = Promise.resolve().then(() => {
-            if (this.getDriverSync(driverName)) {
-                return this.getDriverSync(driverName);
+            if (self.getDriverSync(driverName)) {
+                return self.getDriverSync(driverName);
             } else {
                 throw new Error('Driver not found.');
             }
@@ -237,6 +237,7 @@ class LocalForage {
     }
 
     getDriverSync(driverName) {
+        var self = this;
         if (isLibraryDriver(driverName)) {
             switch (driverName) {
                 case self.INDEXEDDB:

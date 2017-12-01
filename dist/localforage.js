@@ -2148,12 +2148,10 @@ var LocalForage = function () {
     };
 
     LocalForage.prototype.getDriver = function getDriver(driverName, callback, errorCallback) {
-        var _this = this;
-
         var self = this;
         var getDriverPromise = Promise$1.resolve().then(function () {
-            if (_this.getDriverSync(driverName)) {
-                return _this.getDriverSync(driverName);
+            if (self.getDriverSync(driverName)) {
+                return self.getDriverSync(driverName);
             } else {
                 throw new Error('Driver not found.');
             }
@@ -2163,6 +2161,7 @@ var LocalForage = function () {
     };
 
     LocalForage.prototype.getDriverSync = function getDriverSync(driverName) {
+        var self = this;
         if (isLibraryDriver(driverName)) {
             switch (driverName) {
                 case self.INDEXEDDB:

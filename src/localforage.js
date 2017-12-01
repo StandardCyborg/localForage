@@ -237,12 +237,16 @@ class LocalForage {
     }
 
     getDriver(driverName, callback, errorCallback) {
-        const getDriverPromise = DefinedDrivers[driverName] ?
-            Promise.resolve(DefinedDrivers[driverName]) :
+        const getDriverPromise = this.getDriverSync(driverName) ?
+            Promise.resolve(this.getDriverSync(driverName)) :
             Promise.reject(new Error('Driver not found.'));
 
         executeTwoCallbacks(getDriverPromise, callback, errorCallback);
         return getDriverPromise;
+    }
+
+    getDriverSync(driverName) {
+        return DefinedDrivers[driverName];
     }
 
     getSerializer(callback) {
